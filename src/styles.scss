@@ -100,6 +100,23 @@ th {
   background: white;
   border-radius: 6px;
 }
+.staff-form-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgb(15 23 42 / 45%);
+}
+.staff-form-overlay .form-panel {
+  width: min(560px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: 0;
+  box-shadow: 0 10px 30px rgb(15 23 42 / 20%);
+}
 .form-panel label {
   display: block;
   margin-bottom: 0.4rem;

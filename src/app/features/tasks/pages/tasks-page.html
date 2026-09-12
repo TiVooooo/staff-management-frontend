@@ -1,0 +1,153 @@
+<div class="page-heading">
+  <h1>Công việc</h1>
+  <button type="button" (click)="openCreateForm()" [disabled]="loading() || saving()">
+    Tạo công việc
+  </button>
+</div>
+<form class="toolbar" (ngSubmit)="loadTasks()">
+  <label for="task-search">Tìm công việc</label>
+  <input
+    id="task-search"
+    name="term"
+    [(ngModel)]="term"
+    placeholder="Tên, nhãn hoặc loại công việc"
+  />
+  <button type="submit" [disabled]="loading()">Tìm kiếm</button>
+</form>
+@if (loading()) {
+  <p role="status">Đang tải công việc...</p>
+}
+@if (error()) {
+  <p class="error" role="alert">{{ error() }}</p>
+}
+@if (success()) {
+  <p class="success" role="status">{{ success() }}</p>
+}
+@if (!loading() && !error() && count() === 0) {
+  <p>Không có công việc phù hợp.</p>
+}
+<div #ganttContainer class="gantt-chart" aria-label="Biểu đồ tiến độ công việc"></div>
+
+@if (formOpen()) {
+  <div class="form-overlay">
+    <section class="form-panel" aria-labelledby="task-form-title">
+      <h2 id="task-form-title">
+        {{ editingId === null ? 'Tạo công việc' : 'Cập nhật công việc' }}
+      </h2>
+      <form (ngSubmit)="save()">
+        <label for="task-label">Label</label>
+        <input
+          id="task-label"
+          name="label"
+          [(ngModel)]="label"
+          required
+          maxlength="200"
+          [disabled]="saving()"
+        />
+        <label for="task-name">Tên task</label>
+        <input
+          id="task-name"
+          name="name"
+          [(ngModel)]="name"
+          required
+          maxlength="200"
+          [disabled]="saving()"
+        />
+        <label for="task-type">Type</label>
+        <select id="task-type" name="type" [(ngModel)]="type" [disabled]="saving()">
+          <option value="task">Task</option>
+          <option value="project">Project</option>
+          <option value="milestone">Milestone</option>
+        </select>
+        <label for="task-parent">Task cha</label>
+        <select
+          id="task-parent"
+          name="idparent"
+          [ngModel]="idparent ?? ''"
+          (ngModelChange)="idparent = $event === '' ? null : +$event"
+          [disabled]="saving()"
+        >
+          <option value="">Không có task cha</option>
+          @for (parent of parentTasks(); track parent.id) {
+            @if (parent.id !== editingId) {
+              <option [value]="parent.id">{{ parent.id }} - {{ parent.name }}</option>
+            }
+          }
+        </select>
+        <div class="form-grid">
+          <div>
+            <label for="task-start">Ngày bắt đầu</label
+            ><input
+              id="task-start"
+              name="startDate"
+              type="date"
+              [(ngModel)]="startDate"
+              [disabled]="saving()"
+            />
+          </div>
+          <div>
+            <label for="task-end">Ngày kết thúc</label
+            ><input
+              id="task-end"
+              name="endDate"
+              type="date"
+              [(ngModel)]="endDate"
+              [disabled]="saving()"
+            />
+          </div>
+        </div>
+        <div class="form-grid">
+          <div>
+            <label for="task-duration">Duration</label
+            ><input
+              id="task-duration"
+              name="duration"
+              type="number"
+              min="0"
+              step="0.01"
+              [(ngModel)]="duration"
+              [disabled]="saving()"
+            />
+          </div>
+          <div>
+            <label for="task-progress">Tiến độ (%)</label
+            ><input
+              id="task-progress"
+              name="progress"
+              type="number"
+              min="0"
+              max="100"
+              [(ngModel)]="progress"
+              [disabled]="saving()"
+            />
+          </div>
+        </div>
+        <label class="checkbox"
+          ><input
+            name="isUnscheduled"
+            type="checkbox"
+            [(ngModel)]="isUnscheduled"
+            [disabled]="saving()"
+          />
+          Chưa lên lịch</label
+        >
+        @if (formError()) {
+          <p class="error" role="alert">{{ formError() }}</p>
+        }
+        <div class="actions">
+          <button type="submit" [disabled]="saving()">
+            {{ saving() ? 'Đang lưu...' : 'Lưu' }}
+          </button>
+          @if (editingId !== null) {
+            <button type="button" class="danger" (click)="deleteTask()" [disabled]="saving()">
+              Xóa
+            </button>
+          }
+          <button type="button" class="secondary" (click)="closeForm()" [disabled]="saving()">
+            Hủy
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+}

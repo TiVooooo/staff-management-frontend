@@ -68,36 +68,40 @@
 </div>
 
 @if (formOpen()) {
-  <section class="form-panel" aria-labelledby="form-title">
-    <h2 id="form-title">{{ editingId === null ? 'Thêm nhân viên' : 'Cập nhật nhân viên' }}</h2>
-    <form (ngSubmit)="save()">
-      <label for="full-name">Họ và tên</label>
-      <input
-        id="full-name"
-        name="fullName"
-        [(ngModel)]="fullName"
-        required
-        maxlength="100"
-        [disabled]="saving()"
-      />
-      <label for="short-name">Tên ngắn</label>
-      <input
-        id="short-name"
-        name="shortName"
-        [(ngModel)]="shortName"
-        required
-        maxlength="50"
-        [disabled]="saving()"
-      />
-      @if (formError()) {
-        <p class="error" role="alert">{{ formError() }}</p>
-      }
-      <div class="actions">
-        <button type="submit" [disabled]="saving()">{{ saving() ? 'Đang lưu...' : 'Lưu' }}</button>
-        <button type="button" class="secondary" (click)="closeForm()" [disabled]="saving()">
-          Hủy
-        </button>
-      </div>
-    </form>
-  </section>
+  <div class="staff-form-overlay">
+    <section class="form-panel" aria-labelledby="form-title">
+      <h2 id="form-title">{{ editingId === null ? 'Thêm nhân viên' : 'Cập nhật nhân viên' }}</h2>
+      <form (ngSubmit)="save()">
+        <label for="full-name">Họ và tên</label>
+        <input
+          id="full-name"
+          name="fullName"
+          [(ngModel)]="fullName"
+          required
+          maxlength="100"
+          [disabled]="saving()"
+        />
+        <label for="short-name">Tên ngắn</label>
+        <input
+          id="short-name"
+          name="shortName"
+          [(ngModel)]="shortName"
+          required
+          maxlength="50"
+          [disabled]="saving()"
+        />
+        @if (formError()) {
+          <p class="error" role="alert">{{ formError() }}</p>
+        }
+        <div class="actions">
+          <button type="submit" [disabled]="saving()">
+            {{ saving() ? 'Đang lưu...' : 'Lưu' }}
+          </button>
+          <button type="button" class="secondary" (click)="closeForm()" [disabled]="saving()">
+            Hủy
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
 }
