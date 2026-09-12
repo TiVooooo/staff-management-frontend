@@ -1,1 +1,7 @@
-<router-outlet />
+<header class="app-header">
+  <a class="brand" routerLink="/">Task Management</a>
+  <nav aria-label="Điều hướng chính">
+    <a routerLink="/staff" routerLinkActive="active" ariaCurrentWhenActive="page">Nhân viên</a>
+  </nav>
+</header>
+<main class="container"><router-outlet /></main>

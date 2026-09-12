@@ -1,0 +1,103 @@
+<div class="page-heading">
+  <h1>Nhân viên</h1>
+  <button type="button" (click)="openForm()" [disabled]="loading() || saving()">
+    Thêm nhân viên
+  </button>
+</div>
+
+<form class="toolbar" (ngSubmit)="loadStaff()">
+  <label for="staff-search">Tìm nhân viên</label>
+  <input id="staff-search" name="term" [(ngModel)]="term" placeholder="Họ tên hoặc tên ngắn" />
+  <button type="submit" [disabled]="loading() || saving()">Tìm kiếm</button>
+</form>
+
+@if (error()) {
+  <p class="error" role="alert">{{ error() }}</p>
+}
+@if (success()) {
+  <p class="success" role="status">{{ success() }}</p>
+}
+@if (loading()) {
+  <p role="status">Đang tải danh sách...</p>
+}
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Họ và tên</th>
+        <th>Tên ngắn</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of staff(); track item.id) {
+        <tr>
+          <td>{{ item.id }}</td>
+          <td>{{ item.fullName }}</td>
+          <td>{{ item.shortName }}</td>
+          <td class="actions">
+            <button
+              type="button"
+              class="secondary"
+              (click)="openForm(item)"
+              [disabled]="saving() || loading()"
+            >
+              Sửa
+            </button>
+            <button
+              type="button"
+              class="danger"
+              (click)="deleteStaff(item)"
+              [disabled]="saving() || loading()"
+            >
+              Xóa
+            </button>
+          </td>
+        </tr>
+      } @empty {
+        @if (!loading() && !error()) {
+          <tr>
+            <td colspan="4">Không có nhân viên phù hợp.</td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (formOpen()) {
+  <section class="form-panel" aria-labelledby="form-title">
+    <h2 id="form-title">{{ editingId === null ? 'Thêm nhân viên' : 'Cập nhật nhân viên' }}</h2>
+    <form (ngSubmit)="save()">
+      <label for="full-name">Họ và tên</label>
+      <input
+        id="full-name"
+        name="fullName"
+        [(ngModel)]="fullName"
+        required
+        maxlength="100"
+        [disabled]="saving()"
+      />
+      <label for="short-name">Tên ngắn</label>
+      <input
+        id="short-name"
+        name="shortName"
+        [(ngModel)]="shortName"
+        required
+        maxlength="50"
+        [disabled]="saving()"
+      />
+      @if (formError()) {
+        <p class="error" role="alert">{{ formError() }}</p>
+      }
+      <div class="actions">
+        <button type="submit" [disabled]="saving()">{{ saving() ? 'Đang lưu...' : 'Lưu' }}</button>
+        <button type="button" class="secondary" (click)="closeForm()" [disabled]="saving()">
+          Hủy
+        </button>
+      </div>
+    </form>
+  </section>
+}
